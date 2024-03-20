@@ -48,23 +48,31 @@ def validate_member(data):
 @app.route('/members', methods=['POST'])
 def add_member():
     data = request.json
-    validate_member(data)
+    # Ensure all required fields are present
+    if not data or 'name' not in data or 'email' not in data or 'interest' not in data:
+        return jsonify({'error': 'Missing or invalid data'}), 400
 
     name = data['name']
     email = data['email']
-    discipline = data['discipline']
+    interest = data['interest']  # Use 'interest' to match your table column
 
     try:
         cursor = mysql.connection.cursor()
-        cursor.execute("INSERT INTO members(name, email, discipline) VALUES (%s, %s, %s)", (name, email, discipline))
+        cursor.execute("INSERT INTO members(name, email, interest) VALUES (%s, %s, %s)", (name, email, interest))
         mysql.connection.commit()
     except Exception as e:
         app.logger.error(f"Database error: {e}")
+        # If the error is related to duplicate entry for 'email', you might want to handle it differently
+        if "Duplicate entry" in str(e):
+            return jsonify({'error': 'Email already exists'}), 409
         return jsonify({'error': 'Database operation failed'}), 500
     finally:
         cursor.close()
 
     return jsonify(message="Member added successfully"), 201
+
+
+
 
 # Read all members or a single member by ID
 @app.route('/members', methods=['GET'])

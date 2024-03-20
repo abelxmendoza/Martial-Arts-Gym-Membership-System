@@ -1,0 +1,23 @@
+# Environment configuration
+.env
+
+# Python virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# Editor and IDE files
+*.session.sql
+*.idea/
+*.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Operating System files
+.DS_Store  # for macOS
+Thumbs.db  # for Windows
+
+# Python distribution artifacts
+dist/
+build/
+*.egg-info/
